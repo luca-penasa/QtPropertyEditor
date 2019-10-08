@@ -23,6 +23,7 @@ endif()
 
 # Find required packages.
 find_package(Qt5 COMPONENTS Widgets REQUIRED)
+find_package (Eigen3 REQUIRED NO_MODULE)
 
 # Build project as a static library.
 add_library(${PROJECT_NAME} STATIC QtPropertyEditor.cpp QtPropertyEditor.h)
