@@ -27,4 +27,4 @@ find_package(Qt5 COMPONENTS Widgets REQUIRED)
 # Build project as a static library.
 add_library(${PROJECT_NAME} STATIC QtPropertyEditor.cpp QtPropertyEditor.h)
 qt5_use_modules(${PROJECT_NAME} Widgets)
-target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} Eigen3::Eigen)
