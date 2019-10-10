@@ -147,6 +147,7 @@ bool QtAbstractPropertyModel::setData(const QModelIndex &index,
     QByteArray propertyName = propertyNameAtIndex(index);
     if (propertyName.isEmpty()) return false;
     bool result = object->setProperty(propertyName.constData(), value);
+
     // Result will be FALSE for dynamic properties, which causes the tree view
     // to lag. So make sure we still return TRUE in this case.
     if (!result && object->dynamicPropertyNames().contains(propertyName))
@@ -224,7 +225,7 @@ QtPropertyTreeModel::Node *QtPropertyTreeModel::nodeAtIndex(
   try {
     return static_cast<Node *>(index.internalPointer());
   } catch (...) {
-    return NULL;
+    return nullptr;
   }
 }
 
@@ -232,10 +233,10 @@ QObject *QtPropertyTreeModel::objectAtIndex(const QModelIndex &index) const {
   // If node is an object, return the node's object.
   // Else if node is a property, return the parent node's object.
   Node *node = nodeAtIndex(index);
-  if (!node) return NULL;
+  if (!node) return nullptr;
   if (node->object) return node->object;
   if (node->parent) return node->parent->object;
-  return NULL;
+  return nullptr;
 }
 
 QByteArray QtPropertyTreeModel::propertyNameAtIndex(
@@ -328,6 +329,8 @@ bool QtPropertyTreeModel::setData(const QModelIndex &index,
         return true;
       } else {
         bool result = object->setProperty(propertyName.constData(), value);
+        emit objectModified(object);
+
         // Result will be FALSE for dynamic properties, which causes the tree
         // view to lag. So make sure we still return TRUE in this case.
         if (!result && object->dynamicPropertyNames().contains(propertyName))
@@ -526,7 +529,7 @@ void QtPropertyTableModel::reorderChildObjectsToMatchRowOrder(int firstRow) {
     if (object) {
       QObject *parent = object->parent();
       if (parent) {
-        object->setParent(NULL);
+        object->setParent(nullptr);
         object->setParent(parent);
       }
     }
@@ -541,9 +544,9 @@ QWidget *QtPropertyDelegate::createEditor(QWidget *parent,
     if (value.type() == QVariant::Bool) {
       // We want a check box, but instead of creating an editor widget we'll
       // just directly draw the check box in paint() and handle mouse clicks in
-      // editorEvent(). Here, we'll just return NULL to make sure that no editor
-      // is created when this cell is double clicked.
-      return NULL;
+      // editorEvent(). Here, we'll just return nullptr to make sure that no
+      // editor is created when this cell is double clicked.
+      return nullptr;
     } else if (value.type() == QVariant::Double) {
       // Return a QLineEdit to enter double values with arbitrary precision and
       // scientific notation.
@@ -590,9 +593,9 @@ QWidget *QtPropertyDelegate::createEditor(QWidget *parent,
       if (value.canConvert<QtPushButtonActionWrapper>()) {
         // We want a push button, but instead of creating an editor widget we'll
         // just directly draw the button in paint() and handle mouse clicks in
-        // editorEvent(). Here, we'll just return NULL to make sure that no
+        // editorEvent(). Here, we'll just return nullptr to make sure that no
         // editor is created when this cell is double clicked.
-        return NULL;
+        return nullptr;
       }
     }
   }
@@ -836,7 +839,7 @@ QString QtPropertyDelegate::displayText(const QVariant &value,
              QString::number(rect.height()) + QString("]");
     } else if (value.typeName() == QString("Eigen::Vector3d")) {
       Eigen::Vector3d o = qvariant_cast<Eigen::Vector3d>(value);
-      qInfo() << "eigen type";
+      //      qInfo() << "eigen type";
 
       return QString("(") + QString::number(o(0)) + QString(", ") +
              QString::number(o(1)) + QString(", ") + QString::number(o(2)) +
